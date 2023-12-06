@@ -4,11 +4,13 @@ import axios from 'axios';
 
 export default function EditProfile({ userid }) {
   const [user, setUser] = useState({
-    phoneNumber: '',
+    phoneNumber: '', // Set default value for phoneNumber
     password: '',
-    email: ''
+    email: '',
+    firstName: '', // Add other fields with default values if needed
+    lastName: '',
+    course: '',
   });
-
   const [isConfirmationModalVisible, setConfirmationModalVisible] = useState(false);
   const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);
 
@@ -49,7 +51,7 @@ export default function EditProfile({ userid }) {
     };
 
     axios
-      .put(`http://localhost:8080/user/${userid}`, updatedUser)
+      .put(`https://wanted-sweater-production.up.railway.app/user/${userid}`, updatedUser)
       .then((response) => {
         console.log('User data updated successfully:', response.data);
         showSuccessModal(); // Show the success modal
@@ -61,7 +63,7 @@ export default function EditProfile({ userid }) {
 
   const fetchUserEntry = () => {
     axios
-      .get(`http://localhost:8080/userGet/${userid}`)
+      .get(`https://wanted-sweater-production.up.railway.app/userGet/${userid}`)
       .then((response) => {
         const userData = response.data;
         setUser(userData);
@@ -119,35 +121,35 @@ export default function EditProfile({ userid }) {
       </View>
 
       <Modal
-  transparent={true}
-  visible={isConfirmationModalVisible}
->
-  <View style={styles.modalContainer}>
-    <View style={styles.modalContent}>
-      <Text style={styles.modalText}>Are you sure you want to save changes?</Text>
-      <View style={styles.modalButtonContainer}>
-        <TouchableOpacity
-          style={styles.modalButton}
-          onPress={() => {
-            hideConfirmationModal();
-            // Perform the actual save operation here
-            handleSave();
-          }}
-        >
-          <Text style={styles.modalButtonText}>Yes</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.modalButtonNo}
-          onPress={() => {
-            hideConfirmationModal();
-          }}
-        >
-          <Text style={styles.modalButtonText}>No</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  </View>
-</Modal>
+        transparent={true}
+        visible={isConfirmationModalVisible}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>Are you sure you want to save changes?</Text>
+            <View style={styles.modalButtonContainer}>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => {
+                  hideConfirmationModal();
+                  // Perform the actual save operation here
+                  handleSave();
+                }}
+              >
+                <Text style={styles.modalButtonText}>Yes</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalButtonNo}
+                onPress={() => {
+                  hideConfirmationModal();
+                }}
+              >
+                <Text style={styles.modalButtonText}>No</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       {/* Success Modal */}
       <Modal

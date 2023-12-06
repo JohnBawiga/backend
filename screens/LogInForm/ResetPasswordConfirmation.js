@@ -24,7 +24,7 @@ export default function ResetPasswordConfirmation({ route }) {
     }
 
     try {
-      const updatePasswordResponse = await axios.put('http://localhost:8080/updatepassword', {
+      const updatePasswordResponse = await axios.put('https://wanted-sweater-production.up.railway.app/updatepassword', {
         email: email,
         newPassword: newPassword,
       });

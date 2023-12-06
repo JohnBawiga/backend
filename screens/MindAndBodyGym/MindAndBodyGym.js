@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Picker, Modal, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import ExerciseModal from "./ExerciseModal";
+import { Picker } from "@react-native-picker/picker";
 
 class MindAndBodyGym extends Component {
   constructor(props) {
@@ -38,10 +39,10 @@ class MindAndBodyGym extends Component {
 
   getExercises = async (category, difficulty) => {
     try {
-      let apiUrl = `http://localhost:8080/exercises/getByExerciseType?exercisetype=${category}`;
+      let apiUrl = `https://wanted-sweater-production.up.railway.app/exercises/getByExerciseType?exercisetype=${category}`;
 
       if (difficulty !== 'All') {
-        apiUrl = `http://localhost:8080/exercises/getByExerciseTypeAndDifficulty?exercisetype=${category}&difficulty=${difficulty}`;
+        apiUrl = `https://wanted-sweater-production.up.railway.app/exercises/getByExerciseTypeAndDifficulty?exercisetype=${category}&difficulty=${difficulty}`;
       }
 
       const response = await fetch(apiUrl);

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Picker } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet} from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -19,7 +20,7 @@ export default function JournalList({ userid }) {
 
   const fetchJournalEntries = () => {
   axios
-    .get(`http://localhost:8080/journal/${userid}`)
+    .get(`https://wanted-sweater-production.up.railway.app/journal/${userid}`)
     .then(response => {
       // Set both journalEntries and filteredEntries to the response data
       setJournalEntries(response.data);

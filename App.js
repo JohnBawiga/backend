@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"; 
@@ -8,7 +8,6 @@ import CreateJournalV2 from "./screens/JournalForm/CreateJournalV2";
 import EditJournalV2 from "./screens/JournalForm/EditJournalV2";
 import JournalList from "./screens/JournalForm/JournalList";
 import HomePage from "./screens/HomePage";
-import AppointmentList from "./screens/AppointmentForm/AppointmentList";
 import SignupForm from "./screens/SignUpForm/SignUpForm";
 import ViewProfile from "./screens/ViewProfile/ViewProfile";
 import MakeAppointment from "./screens/AppointmentForm/MakeAppointment";
@@ -26,6 +25,7 @@ import ScheduledMeetings from './screens/ScheduledMeetings';
 import EditProfile from './screens/ViewProfile/EditProfile';
 import ForgotPassword from './screens/LogInForm/ForgotPassword';
 import ResetPasswordConfirmation from "./screens/LogInForm/ResetPasswordConfirmation"
+import * as Updates from 'expo-updates';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -33,17 +33,26 @@ const Tab = createBottomTabNavigator();
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const handleLoginSuccess = () => {
-    setIsLoggedIn(true);
-  };
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-  };
   function ProfileStack({ route }) {
     const { userid, firstName } = route.params;
-  
-    return (
+  async function onFetchUpdateAsync(){
+    try{
+      const update = await Updates.checkForUpdateAsync();
+
+      if (update.isAvailable){
+        await Updates.fetchUpdateAsync();
+        await Updates.reloadAsync();
+      }
+    }catch (error){
+      alert("error")
+    }
+  }
+
+  useEffect(() => {
+    onFetchUpdateAsync
+  }, [])
+      return (
       <Stack.Navigator>
         <Stack.Screen
           name="ViewProfile"
@@ -74,36 +83,12 @@ function App() {
       </Stack.Navigator>
     );
   }
-  
-  function Guidance(){
-    return(
-      <Stack.Navigator>
-        <Stack.Screen
-          name="ViewRequests"
-          component={ViewRequests}
-          options = {{ headerShown:false }}
-        />
-         <Stack.Screen 
-         name="EditAppointment" 
-         component={EditAppointment} 
-         options = {{ headerShown:false }} />
-      </Stack.Navigator>
-    )
-  }
-  function AppointStack({ route }) {
-    // You can remove the following lines
-    // const { userid, firstName } = route.params;
-  
+
+  function AppointStack({ route }) {  
     return (
       <Stack.Navigator>
         <Stack.Screen
           name="SetAppointment"
-          component={() => (
-            <SetAppointment
-              userid={route.params.userid}
-              firstName={route.params.firstName}
-            />
-          )}
           options={{
             title: "Appointment",
             headerTitleStyle: {
@@ -117,18 +102,28 @@ function App() {
           headerTintColor:'white',
           headerLeft: null, // Remove the back button
           headerShown: true,
-          }}
-        />
-        <Stack.Screen
-          name="MakeAppointment"
-          component={() => (
-            <MakeAppointment
+          }}>
+          {(props) => (
+            <SetAppointment
+            {...props}
               userid={route.params.userid}
               firstName={route.params.firstName}
             />
           )}
-          options={{ headerShown: false }}
-        />
+          
+          </Stack.Screen>
+        <Stack.Screen
+          name="MakeAppointment"
+          options={{ headerShown: false }}>
+          {(props) => (
+            <MakeAppointment
+            {...props}
+              userid={route.params.userid}
+              firstName={route.params.firstName}
+            />
+          )}
+         
+          </Stack.Screen>
       </Stack.Navigator>
     );
   }
@@ -139,12 +134,6 @@ function App() {
       <Stack.Navigator>
         <Stack.Screen
         name="JournalList"
-        component={() => (
-          <JournalList
-            userid={route.params.userid}
-            firstName={route.params.firstName}
-          />
-        )}
         options={{
           headerTitle: 'Journal',
           headerTitleStyle: {
@@ -157,31 +146,18 @@ function App() {
           },
           headerLeft: null, // Remove the back button
           headerShown: true,
-        }}
-      />
-        <Stack.Screen
-          name="EditJournalV2"
-          component={EditJournalV2}
-          options={{
-            title: "Journal Edit",
-            headerTitleStyle: {
-              color: 'white',
-            fontWeight: 'bold',
-            fontSize: 25 // Set the font color to white
-            },
-            headerStyle: {
-            backgroundColor: '#30d5c8', // Set the background color to #30d5c8
-          },
-          headerTintColor:'white'
-          }}
-        />
-        <Stack.Screen
-          name="CreateJournalV2"
-          component={() => (
-          <CreateJournalV2
+        }}>
+        {(props) => (
+          <JournalList
+          {...props}
             userid={route.params.userid}
+            firstName={route.params.firstName}
           />
         )}
+       
+        </Stack.Screen>
+        <Stack.Screen
+          name="EditJournalV2"
           options={{
             title: "Create a Journal",
             headerTitleStyle: {
@@ -193,8 +169,37 @@ function App() {
             backgroundColor: '#30d5c8', // Set the background color to #30d5c8
           },
           headerTintColor:'white'
-          }}
-        />
+          }}>
+          {(props) => (
+          <EditJournalV2
+          {...props}
+          userid={route.params.userid}
+          />
+          
+          )}
+</Stack.Screen>
+        <Stack.Screen
+          name="CreateJournalV2"
+          options={{
+            title: "Create a Journal",
+            headerTitleStyle: {
+              color: 'white',
+            fontWeight: 'bold',
+            fontSize: 25 // Set the font color to white
+            },
+            headerStyle: {
+            backgroundColor: '#30d5c8', // Set the background color to #30d5c8
+          },
+          headerTintColor:'white'
+          }}>
+          {(props) => (
+          <CreateJournalV2
+          {...props}
+            userid={route.params.userid}
+          />
+        )}
+          
+        </Stack.Screen>
       </Stack.Navigator>
     );
   }
@@ -205,112 +210,130 @@ function App() {
       <Stack.Navigator>
         <Stack.Screen
         name="HomePage"
-        component={() => (
+        options={{ headerShown: false }}>
+        {(props) => (
           <HomePage
+          {...props}
             userid={route.params.userid}
             firstName={route.params.firstName}
+            studentID={route.params.studentID}
+
           />
         )}
-        options={{ headerShown: false }}
-      />
+       
+</Stack.Screen>
         <Stack.Screen
           name="Notifications"
-          component={() => (
+          options={{ title: "Notifications", headerTitleAlign: 'center', headerTitleStyle: {
+      color: "#ffffff" // Set the desired font color here
+    }, headerTintColor: '#ffffff',
+    headerStyle:{ backgroundColor: '#30d5c8'}}}>
+          {(props) => (
           <Notifications
+          {...props}
             userid={route.params.userid}
             firstName={route.params.firstName}
 
           />
           
         )}
-        options={{ title: "Notifications", headerTitleAlign: 'center', headerTitleStyle: {
-      color: "#ffffff" // Set the desired font color here
-    }, headerTintColor: '#ffffff',
-    headerStyle:{ backgroundColor: '#30d5c8'}}}
-    />
+        
+        </Stack.Screen>
  <Stack.Screen
         name="ViewProfile"
-        component={() => (
-          <ViewProfile
-            userid={route.params.userid}
-            firstName={route.params.firstName}
-          />
-        )}
         options={{ title: "Profile", headerTitleAlign: 'center', headerTitleStyle: {
       color: "#ffffff" // Set the desired font color here
     }, headerTintColor: '#ffffff',
-    headerStyle:{ backgroundColor: '#30d5c8'}}}
-    />
-    <Stack.Screen
-        name="EditProfile"
-        component={() => (
-          <EditProfile
+    headerStyle:{ backgroundColor: '#30d5c8'}}}>
+        {(props) => (
+          <ViewProfile
+          {...props}
             userid={route.params.userid}
             firstName={route.params.firstName}
           />
         )}
+        
+        </Stack.Screen>
+    <Stack.Screen
+        name="EditProfile"
         options={{ title: "Edit Profile", headerTitleAlign: 'center', headerTitleStyle: {
       color: "#ffffff" // Set the desired font color here
     }, headerTintColor: '#ffffff',
-    headerStyle:{ backgroundColor: '#30d5c8'}}}
-    />
-    
- <Stack.Screen
-        name="AboutUs"
-        component={() => (
-          <AboutUs
+    headerStyle:{ backgroundColor: '#30d5c8'}}}>
+        {(props) => (
+          <EditProfile
+          {...props}
             userid={route.params.userid}
             firstName={route.params.firstName}
           />
         )}
+       
+</Stack.Screen>    
+ <Stack.Screen
+        name="AboutUs"
         options={{ title: "About Us", headerTitleAlign: 'center', headerTitleStyle: {
       color: "#ffffff" // Set the desired font color here
     }, headerTintColor: '#ffffff',
-    headerStyle:{ backgroundColor: '#30d5c8'}}}
-    />
-        <Stack.Screen
-        name="ProgressReport"
-        component={() => (
-          <ProgressReport
+    headerStyle:{ backgroundColor: '#30d5c8'}}}>
+        {(props) => (
+          <AboutUs
+          {...props}
             userid={route.params.userid}
             firstName={route.params.firstName}
           />
         )}
+       
+        </Stack.Screen>
+        <Stack.Screen
+        name="ProgressReport"
         options={{ title: "Progress Report", headerTitleAlign: 'center', headerTitleStyle: {
       color: "#ffffff" // Set the desired font color here
     }, headerTintColor: '#ffffff',
-    headerStyle:{ backgroundColor: '#30d5c8'}}}
-    />
+    headerStyle:{ backgroundColor: '#30d5c8'}}}>
+        {(props) => (
+          <ProgressReport
+          {...props}
+            userid={route.params.userid}
+            firstName={route.params.firstName}
+          />
+        )}
+        
+</Stack.Screen>
         <Stack.Screen
           name="Reminder"
-          component={() => (
-          <Reminder
-            userid={route.params.userid}
-            firstName={route.params.firstName}
-
-          />
-          
-        )}
-        options={{ title: "Reminders", headerTitleAlign: 'center', headerTitleStyle: {
+          options={{ title: "Reminders", headerTitleAlign: 'center', headerTitleStyle: {
       color: "#ffffff" // Set the desired font color here
     }, headerTintColor: '#ffffff',
-    headerStyle:{ backgroundColor: '#30d5c8'}}}
-    />
+    headerStyle:{ backgroundColor: '#30d5c8'}}}>
+          {(props) => (
+          <Reminder
+          {...props}
+            userid={route.params.userid}
+            firstName={route.params.firstName}
+            studentID={route.params.studentID}
+
+          />
+        )}
+        
+        </Stack.Screen>
         <Stack.Screen
           name="ScheduledMeetings"
-          component={() => (
+          options={{ title: "Scheduled Meetings", headerTitleAlign: 'center', headerTitleStyle: {
+      color: "#ffffff" // Set the desired font color here
+    }, headerTintColor: '#ffffff',
+    headerStyle:{ backgroundColor: '#30d5c8'}}}>
+          {(props) => (
           <ScheduledMeetings
+          {...props}
             userid={route.params.userid}
             firstName={route.params.firstName}
+            studentID={route.params.studentID}
 
           />
           
         )}
-        options={{ title: "Scheduled Meetings", headerTitleAlign: 'center', headerTitleStyle: {
-      color: "#ffffff" // Set the desired font color here
-    }, headerTintColor: '#ffffff',
-    headerStyle:{ backgroundColor: '#30d5c8'}}}
-    />
+       
+        </Stack.Screen>
       
       
       </Stack.Navigator>
@@ -318,14 +341,14 @@ function App() {
     )
   }
   function MainStack({ route }) {
-    const { userid, firstName } = route.params;
+    const { studentID, userid, firstName } = route.params;
 
     return (
       <Tab.Navigator screenOptions={{ tabBarShowLabel: false }}>
         <Tab.Screen
           name="HomePageStack"
           component={HomePageStack}       
-          initialParams={{ userid, firstName }}
+          initialParams={{ userid, firstName, studentID}}
    
           options={{
             tabBarIcon: ({ focused }) => (
@@ -439,3 +462,4 @@ function App() {
 }
 
 export default App;
+

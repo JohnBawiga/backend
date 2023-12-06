@@ -2,41 +2,52 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginFormat() {
   const navigation = useNavigation();
+  const [studentID, setStudentID] = useState('');
   const [userid, setUserid] = useState('');
   const [password, setPassword] = useState('');
   const [loginFailed, setLoginFailed] = useState(false); // State to track login failure
   const [inputError, setInputError] = useState(''); // State for input error message
   const clearFields = () => {
-    setUserid('');
+    setStudentID('');
     setPassword('');
   };
 
   const handleLogin = async () => {
-    if (!userid || !password) {
+    if (!studentID || !password) {
       setInputError('Input all fields!');
       return;
     }
-
+  
     try {
       setInputError(''); // Clear input error message
-      const response = await axios.get('http://localhost:8080/getByUserid', {
+      const response = await axios.get('https://wanted-sweater-production.up.railway.app/getByUserid', {
         params: {
-          userid: userid,
+          studentID: studentID,
           password: password,
         },
       });
-
+  
       console.log('Response Data:', response.data);
-
+  
       if (response.status === 200) {
         console.log('Login successful');
-        const { firstName } = response.data;
+        const {userid, firstName, studentID: responseStudentID } = response.data;
+  
         console.log('firstName:', firstName);
-        navigation.navigate('MainStack', { userid: userid, firstName: firstName });
+        console.log('Student ID:', responseStudentID);
+        console.log('UserID', userid);
+  
+        // Store the login details in AsyncStorage
+        await AsyncStorage.setItem('userDetails', JSON.stringify({
+          firstName: firstName,
+          studentID: responseStudentID,
+        }));
+  
+        navigation.navigate('MainStack', { studentID: responseStudentID, firstName: firstName, userid:userid });
       } else {
         setLoginFailed(true); // Set loginFailed to true on failure
         console.error('Login failed');
@@ -65,8 +76,8 @@ export default function LoginFormat() {
       <View style={styles.inputContainer}>
         <TextInput
           style={[styles.input, { width: inputWidth, height: inputHeight }]}
-          onChangeText={(text) => setUserid(text)}
-          value={userid}
+          onChangeText={(text) => setStudentID(text)}
+          value={studentID}
           placeholder="00-0000-0000"
           placeholderTextColor="rgba(0, 0, 0, 0.5"
         />

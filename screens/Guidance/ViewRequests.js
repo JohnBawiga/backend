@@ -11,7 +11,7 @@ const ViewRequests = () => {
 
   useEffect(() => {
     // Make an API request to fetch all appointments
-    axios.get('http://localhost:8080/getAppointments')
+    axios.get('https://wanted-sweater-production.up.railway.app/getAppointments')
       .then(response => {
         setAppointments(response.data);
       })
@@ -22,7 +22,7 @@ const ViewRequests = () => {
 
   const handleDeleteAppointment = async (makeappointmentid) => {
     try {
-      const response = await axios.delete(`http://localhost:8080/deleteUserAppointment/${makeappointmentid}`);
+      const response = await axios.delete(`https://wanted-sweater-production.up.railway.app/deleteUserAppointment/${makeappointmentid}`);
 
       if (response.status === 200) {
         // Remove the deleted appointment from the state
@@ -65,7 +65,6 @@ const ViewRequests = () => {
         />
       )}
 
-      {/* Custom modal for displaying notifications */}
       <Modal
         animationType="slide"
         transparent={true}

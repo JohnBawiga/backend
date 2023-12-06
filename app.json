@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "FirstProject",
-    "slug": "FirstProject",
+    "slug": "capstonewelltalk",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "967ac376-9774-489e-beee-5235a89eb1b2"
+      }
+    },
+    "owner": "jack1tup2"
   }
 }

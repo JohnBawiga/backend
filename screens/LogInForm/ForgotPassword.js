@@ -17,7 +17,7 @@ export default function ForgotPassword() {
   const handleForgotPassword = async () => {
     try {
       // Step 1: Send a request to your backend to initiate the reset process
-      const response = await axios.post('http://localhost:8080/forgotpassword', {
+      const response = await axios.post('http://wanted-sweater-production.up.railway.app/forgotpassword', {
         email: email,
       });
       

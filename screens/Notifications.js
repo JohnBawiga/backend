@@ -13,7 +13,7 @@ export default function Notifications({ userid }) {
 
   const fetchNotifications = () => {
     axios
-      .get(`http://localhost:8080/getAppointmentsByUserAndDecision/${userid}`)
+      .get(`https://wanted-sweater-production.up.railway.app/getAppointmentsByUserAndDecision/${userid}`)
       .then((response) => {
         // Filter the notifications with decision === true
         const filteredNotifications = response.data.filter(notification => notification.decision === true);
@@ -26,7 +26,7 @@ export default function Notifications({ userid }) {
  
   return (
     <View style={styles.container}>
-      <ScrollView>
+      <ScrollView>  
         {notifications.map((notification, index) => (
           <TouchableOpacity
             key={index}

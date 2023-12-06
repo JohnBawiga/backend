@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, Button, Image, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import alert from './Alert';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
@@ -7,7 +7,8 @@ import { AntDesign } from '@expo/vector-icons';
 
 const SignupForm = () => {
   const navigation = useNavigation();
-  const [userid, setUserid] = useState('');
+  const [studentID, setStudentID] = useState(''); // Change userid to studentID
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [course, setCourse] = useState('');
@@ -17,6 +18,7 @@ const SignupForm = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [existingUser, setExistingUser] = useState({
+    
 
     firstName: '',
     lastName: '',
@@ -24,6 +26,10 @@ const SignupForm = () => {
     email: '',
     phoneNumber: '',
   });
+  const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);
+  const displaySuccessfulAlert = () => {
+    setSuccessModalVisible(true);
+  };
   const [userExists, setUserExists] = useState(false);
   const handleBackToLogin = () => {
     // Navigate to the login screen when the back button is pressed
@@ -32,21 +38,14 @@ const SignupForm = () => {
   // Function to send a POST request to the Spring Boot API
   const sendSignupRequest = async (userData) => {
     try {
-      const response = await axios.post('http://localhost:8080/signup', userData);
+      const response = await axios.post('https://wanted-sweater-production.up.railway.app/signup', userData);
 
       // Handle the response here
       console.log('Response:', response.data);
-
-      // Check if the response indicates success (you can modify this condition)
-      if (response.status === 200) {
-
-        console.log('Signup successful');
-        clearFormFields();
-        displaySuccessfulAlert();
-      } else {
-        // Handle other response statuses or errors
-        console.log('Signup failed');
-      }
+      console.log('Signup successful');
+      clearFormFields();
+      displaySuccessfulAlert();
+      
     } catch (error) {
       // Handle any errors that occur during the request
       console.error('Error:', error);
@@ -57,7 +56,7 @@ const SignupForm = () => {
   const handleSignup = async () => {
     // Check if passwords match
     try {
-      const response = await axios.get(`http://localhost:8080/user/${userid}`, {
+      const response = await axios.get(`https://wanted-sweater-production.up.railway.app/userByStudentID/${studentID}`, {
         validateStatus: function (status) {
           return status === 200 || status === 404; // Treat 404 as a valid status
         },
@@ -66,7 +65,7 @@ const SignupForm = () => {
       if (response.status == 200) {
         setUserExists(true);
         const userData = response.data;
-        setUserid(userData.userid);
+        setStudentID(userData.studentID); // Change userid to studentID
         setFirstName(userData.firstName);
         setLastName(userData.LastName);
         setCourse(userData.course);
@@ -79,7 +78,7 @@ const SignupForm = () => {
           setPasswordError('Passwords do not match');
           return;
         }
-        if (!userid || !firstName || !lastName || !course || !email || !phoneNumber || !password) {
+        if (!studentID || !firstName || !lastName || !course || !email || !phoneNumber || !password) {
           setPasswordError('Please fill in all fields');
           return;
         }
@@ -89,7 +88,7 @@ const SignupForm = () => {
         }
         // Create an object with user data
         const userData = {
-          userid,
+          studentID,
           firstName,
           lastName,
           course,
@@ -103,13 +102,9 @@ const SignupForm = () => {
       console.log("Error: ", error);
     }
   };
-  const displaySuccessfulAlert = () => {
-    alert('Register', 'User successfully registered', [
-      { text: 'OK', onPress: () => console.log('OK Pressed') },
-    ]);
-  };
+  
   const clearFormFields = () => {
-    setUserid('');
+    setStudentID('');
     setFirstName('');
     setLastName('');
     setCourse('');
@@ -131,9 +126,9 @@ const SignupForm = () => {
       <Text style={styles.header}>Sign Up</Text>
       <TextInput
         style={userExists ? styles.inputRed : styles.input}
-        placeholder="User ID"
-        value={userid}
-        onChangeText={(text) => setUserid(text)}
+        placeholder="Student ID"
+        value={studentID}
+        onChangeText={(text) => setStudentID(text)}
       />
 
       <TextInput
@@ -200,9 +195,31 @@ const SignupForm = () => {
           By signing up you consent to "WellTalk"
         </Text>
       </View>
+      <Modal
+        transparent={true}
+        animationType="slide"
+        visible={isSuccessModalVisible}
+        onRequestClose={() => setSuccessModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.successText}>User successfully registered</Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => {
+                setSuccessModalVisible(false);
+                navigation.navigate('Login'); // Navigate to login screen after success
+              }}
+            >
+              <Text style={styles.buttonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
+   
 
 
 const styles = StyleSheet.create({
@@ -296,7 +313,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     color: 'turquoise',
   },
- 
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalButton: {
+    backgroundColor: '#30d5c8',
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 10,
+  },
 });
 
 export default SignupForm;

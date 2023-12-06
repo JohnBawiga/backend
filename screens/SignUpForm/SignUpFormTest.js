@@ -25,7 +25,7 @@ class SignupFormTest extends React.Component {
   // Function to send a POST request to the Spring Boot API
   sendSignupRequest = async (userData) => {
     try {
-      const response = await axios.post('http://localhost:8080/signup', userData);
+      const response = await axios.post('https://wanted-sweater-production.up.railway.app/signup', userData);
 
       // Handle the response here
       console.log('Response:', response.data);
@@ -46,7 +46,7 @@ class SignupFormTest extends React.Component {
   // Function to fetch user data by userid
   fetchUserData = async (userid) => {
     try {
-      const response = await axios.get(`http://localhost:8080/user/${userid}`);
+      const response = await axios.get(`http://roundhouse.proxy.rlwy.net:44142/user/${userid}`);
 
       // Check if user data was found
       if (response.status === 200) {

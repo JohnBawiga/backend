@@ -46,7 +46,7 @@ export default function CreateJournalV2({ userid }) {
     };
 
     axios
-      .post('http://localhost:8080/journal', requestBody)
+      .post('https://wanted-sweater-production.up.railway.app/journal', requestBody)
       .then((response) => {
         console.log('Journal entry saved successfully!');
         setShowSuccessModal(true);

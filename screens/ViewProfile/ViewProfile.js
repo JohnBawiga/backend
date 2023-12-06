@@ -13,7 +13,8 @@ export default function ViewProfile({ userid }) {
     course: '',
     phoneNumber: '',
     password: '',
-    userid:'',
+    studentID: '',
+
   });
   
   useEffect(() => {
@@ -25,7 +26,7 @@ export default function ViewProfile({ userid }) {
   };
   const fetchUserEntry = () => {
     axios
-      .get(`http://localhost:8080/userGet/${userid}`)
+      .get(`https://wanted-sweater-production.up.railway.app/userGet/${userid}`)
       .then((response) => {
         const userData = response.data;
         setUser(userData);
@@ -76,7 +77,7 @@ export default function ViewProfile({ userid }) {
         placeholder="ID Number"
         disabled
         style={styles.input}
-        value={user.userid}
+        value={user.studentID}
       />
      
      <View style={styles.containerButton}>

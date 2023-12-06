@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Modal, KeyboardAvoidingView, Platform } from 'react-native';
 import { format } from 'date-fns';
 import { MaterialIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
@@ -42,7 +42,7 @@ const SetAppointment = ({ firstName, userid }) => {
     };
     try {
       // Send a POST request to your server
-      const response = await axios.post('http://localhost:8080/setAppointment', appointment);
+      const response = await axios.post('https://wanted-sweater-production.up.railway.app/setAppointment', appointment);
 
       if (response.status === 200) {
         // Appointment saved successfully
@@ -65,67 +65,72 @@ const SetAppointment = ({ firstName, userid }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.infoContainer, styles.nameContainer]}>
-        <Text style={styles.boldText}> {firstName}</Text>
-        <View style={styles.dateTimeContainer}>
-          <MaterialIcons name="date-range" size={24} color="white" />
-          <Text style={styles.dateTimeText}>{date}</Text>
-          <AntDesign name="clockcircleo" size={24} color="white" />
-          <Text style={styles.dateTimeText}>{time}</Text>
-        </View>
-      </View>
-      <View style={styles.messageContainer}>
-        <TextInput
-          style={[styles.input, styles.textarea]}
-          value={message}
-          onChangeText={(text) => setMessage(text)}
-          multiline={true}
-          placeholder="Enter a message"
-        />
-        <TouchableOpacity
-          style={[
-            styles.button,
-            message ? styles.buttonEnabled : styles.buttonDisabled, // Apply different styles based on the message state
-          ]}
-          onPress={handleAppointmentSubmit}
-          disabled={!message}
-        >
-          <Text style={styles.buttonText}>Set Appointment</Text>
-        </TouchableOpacity>
-      </View>
-
-      <Modal
-        visible={showModal}
-        transparent={true}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Are you sure?</Text>
-            <View style={styles.modalButtonContainer}>
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={handleSetAppointment}
-              >
-                <Text style={styles.modalButtonText}>Set</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalButton1, styles.modalButtonWithMargin]}
-                onPress={handleCancel}
-              >
-                <Text style={styles.modalButtonText}>Cancel</Text>
-              </TouchableOpacity>
-            </View>
+    
+      <View style={styles.container}>
+        <View style={[styles.infoContainer, styles.nameContainer]}>
+          <Text style={styles.boldText}> {firstName}</Text>
+          <View style={styles.dateTimeContainer}>
+            <MaterialIcons name="date-range" size={24} color="white" />
+            <Text style={styles.dateTimeText}>{date}</Text>
+            <AntDesign name="clockcircleo" size={24} color="white" />
+            <Text style={styles.dateTimeText}>{time}</Text>
           </View>
         </View>
-      </Modal>
-    </View>
+        <View style={styles.messageContainer}>
+          <TextInput
+            style={[styles.input, styles.textarea]}
+            value={message}
+            onChangeText={(text) => setMessage(text)}
+            multiline={true}
+            placeholder="Enter a message"
+          />
+            
+          <TouchableOpacity
+            style={[
+              styles.button,
+              message ? styles.buttonEnabled : styles.buttonDisabled, // Apply different styles based on the message state
+            ]}
+            onPress={handleAppointmentSubmit}
+            disabled={!message}
+          >
+            <Text style={styles.buttonText}>Set Appointment</Text>
+          </TouchableOpacity>
+
+        </View>
+
+        <Modal
+          visible={showModal}
+          transparent={true}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalText}>Are you sure?</Text>
+              <View style={styles.modalButtonContainer}>
+                <TouchableOpacity
+                  style={styles.modalButton}
+                  onPress={handleSetAppointment}
+                >
+                  <Text style={styles.modalButtonText}>Set</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.modalButton1, styles.modalButtonWithMargin]}
+                  onPress={handleCancel}
+                >
+                  <Text style={styles.modalButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    flex: 1,
+    padding: 8,
+    justifyContent: 'center',
   },
   infoContainer: {  
     marginBottom: 20,

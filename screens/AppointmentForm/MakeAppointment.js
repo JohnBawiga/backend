@@ -131,7 +131,7 @@ const MakeAppointment = ({ userid }) => {
 
       <Modal animationType="none" transparent={true} visible={isConfirmationModalOpen}>
     <View style={styles.modalView}>
-    <Text style={styles.modalTitle}>Confirmation</Text> {/* Add a title */}
+    <Text style={styles.modalTitle}>Confirmation</Text>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={[styles.modalButton, { marginRight: 8 }]} onPress={handleSaveMessage}>
           <Text style={styles.modalButtonText}>Save</Text>
