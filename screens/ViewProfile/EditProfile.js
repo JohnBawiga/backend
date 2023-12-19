@@ -51,7 +51,7 @@ export default function EditProfile({ userid }) {
     };
 
     axios
-      .put(`https://wanted-sweater-production.up.railway.app/user/${userid}`, updatedUser)
+      .put(`https://abhorrent-soda-production.up.railway.app/user/${userid}`, updatedUser)
       .then((response) => {
         console.log('User data updated successfully:', response.data);
         showSuccessModal(); // Show the success modal
@@ -63,7 +63,7 @@ export default function EditProfile({ userid }) {
 
   const fetchUserEntry = () => {
     axios
-      .get(`https://wanted-sweater-production.up.railway.app/userGet/${userid}`)
+      .get(`https://abhorrent-soda-production.up.railway.app/userGet/${userid}`)
       .then((response) => {
         const userData = response.data;
         setUser(userData);

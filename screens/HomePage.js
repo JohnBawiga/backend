@@ -5,6 +5,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {  useFocusEffect } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -49,7 +50,7 @@ setLatestMeeting(latestMeetingData);
 
   useEffect(() => {
     // Fetch the latest post from your backend API
-    fetch('https://welltalk-backend.onrender.com/posts')
+    fetch('https://welltalk.onrender.com/posts')
       .then((response) => response.json())
       .then((data) => {
         // Assuming posts are sorted in descending order by id
@@ -63,6 +64,8 @@ setLatestMeeting(latestMeetingData);
       .catch((error) => console.error('Error fetching latest post:', error));
   }, []);
 
+ 
+  
   const handleNotificationsPress = () => {
     navigation.navigate('Notifications');
   };
@@ -96,19 +99,25 @@ setLatestMeeting(latestMeetingData);
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+      <View style={styles.viewone}>
         <Text>
+       
           <Text style={styles.welcomeText}> Welcome back!</Text>
           {'\n'}
           <Text style={styles.userName}>{firstName}</Text>
+          
         </Text>
-        <TouchableOpacity style={styles.menuButton} onPress={toggleModal}>
+        </View>
+        <View style={styles.viewtwo}>
+        <TouchableOpacity stlye={styles.menuButton} onPress={toggleModal}>
           <Image source={require('./Photos/menu.png')} style={styles.headerImage} />
         </TouchableOpacity>
+        </View>
       </View>
 
       <TouchableOpacity onPress={handleScheduleMeetingsPress}>
   {latestMeeting ? (
-    <View style={styles.squareContainer}>
+    
       <View style={styles.square1}>
         <Text style={styles.containerTitle}>Upcoming Meeting</Text>
         <View style={styles.profileContainer}>
@@ -134,7 +143,6 @@ setLatestMeeting(latestMeetingData);
           })}
         </Text>
       </View>
-    </View>
   ) : (
     <View style={styles.squareContainer}>
       <View style={styles.square1}>
@@ -146,26 +154,33 @@ setLatestMeeting(latestMeetingData);
   )}
 </TouchableOpacity>
 
-      <TouchableOpacity onPress={handleReminderPress}>
-        {lastPost && (
-          <View style={styles.squareContainer}>
-            <View style={styles.square}>
-              <Text style={styles.containerTitle}>Latest Post</Text>
-              <Text style={styles.title}>{lastPost.title.length > 45 ? `${lastPost.title.substring(0, 45)}...` : lastPost.title}</Text>
-              <Text style={styles.postTitle1}>
-                {lastPost.counselor.firstName} {lastPost.counselor.lastName}
-              </Text>
-              <Text style={styles.userType}>{lastPost.counselor.userType}</Text>
-              <Text style={styles.description}>{lastPost.content.length > 155 ? `${lastPost.content.substring(0, 155)}...` : lastPost.content}</Text>
-              {lastPost.photoContent && (
-                <View>
-                  <Image source={{ uri: `data:image/jpeg;base64,${lastPost.photoContent}` }} style={styles.postImage} />
-                </View>
-              )}
-            </View>
+<TouchableOpacity onPress={handleReminderPress}>
+  {lastPost ? (
+    <View style={styles.squareContainer}>
+      <View style={styles.square}>
+        <Text style={styles.containerTitle}>Latest Post</Text>
+        <Text style={styles.title}>{lastPost.title.length > 45 ? `${lastPost.title.substring(0, 45)}...` : lastPost.title}</Text>
+        <Text style={styles.postTitle1}>
+          {lastPost.counselor.firstName} {lastPost.counselor.lastName}
+        </Text>
+        <Text style={styles.userType}>{lastPost.counselor.userType}</Text>
+        <Text style={styles.description}>{lastPost.content.length > 155 ? `${lastPost.content.substring(0, 155)}...` : lastPost.content}</Text>
+        {lastPost.photoContent && (
+          <View>
+            <Image source={{ uri: `data:image/jpeg;base64,${lastPost.photoContent}` }} style={styles.postImage} />
           </View>
         )}
-      </TouchableOpacity>
+      </View>
+    </View>
+  ) : (
+    <View style={styles.squareContainer}>
+      <View style={styles.square1}>
+        <Text style={styles.containerTitle}>Latest Post</Text>
+        <Text style={styles.noMeetingsText}>No Latest Posts</Text>
+      </View>
+    </View>
+  )}
+</TouchableOpacity>
 
       <Modal transparent={true} visible={isModalVisible} onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalContainer}>
@@ -208,19 +223,17 @@ setLatestMeeting(latestMeetingData);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
     padding: width * 0.04,
     paddingTop: height * 0.04,
   },
   header: {
     flexDirection: 'row',
-    paddingRight: 10,
     paddingBottom: 20,
   },
   headerImage: {
     width: 40,
     height: 40,
+    
   },
   squareContainer: {
     flexDirection: 'row',
@@ -228,18 +241,11 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   square: {
-    width: 340,
-    height: 260,
+    width: '96%',
+
     backgroundColor: '#30d5c8',
     marginHorizontal: 8,
     borderRadius: 20,
-  },
-  menuButton: {
-    position: 'absolute',
-    top: 0,
-    left: 290,
-    right: 0,
-    padding: 18,
   },
   modalContainer: {
     flex: 1,
@@ -264,6 +270,7 @@ const styles = StyleSheet.create({
     height: 24,
     marginRight: 10,
   },
+  
   containerTitle: {
     paddingHorizontal: 20,
     paddingTop: 10,
@@ -339,7 +346,7 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
   },
   square1: {
-    width: 340,
+    width: '96%',
     height: 160,
     backgroundColor: '#30d5c8',
     marginHorizontal: 8,
@@ -375,7 +382,18 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
   },
-
+  viewone:{
+    width:'90%'
+  },
+  viewtwo:{
+   width: '10%'
+  },
+  menuButton: {
+    position: 'absolute',
+    top: 0,
+    left: width * 0.75, // Adjust this value
+    padding: 18,
+  },
 });
 
 export default HomePage;

@@ -1,19 +1,31 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, useWindowDimensions } from 'react-native';
 import axios from 'axios';
-import Chart from 'chart.js/auto';
-import { ScrollView } from 'react-native-web';
+import { PieChart } from 'react-native-svg-charts';
+import { BarChart } from 'react-native-chart-kit';
+import { Picker } from '@react-native-picker/picker';
+
+const Legend = ({ data, colorPalette }) => {
+  return (
+    <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+      {data.map((item, index) => (
+        <View key={index} style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
+          <View style={{ width: 10, height: 10, backgroundColor: colorPalette[index % colorPalette.length], marginRight: 5 }} />
+          <Text>{`${item.key} (${item.value})`}</Text>
+        </View>
+      ))}
+    </View>
+  );
+};
 
 const ProgressReport = ({ userid }) => {
   const [journals, setJournals] = useState([]);
-  const [monthlyCounts, setMonthlyCounts] = useState({});
-  const goal = 100;
-  const barChartRef = useRef(null);
-  const doughnutChartRef = useRef(null);
-  const secondBarChartRef = useRef(null);
+  const [selectedMonth, setSelectedMonth] = useState(null);
+  const windowDimensions = useWindowDimensions();
 
   useEffect(() => {
-    axios.get(`https://wanted-sweater-production.up.railway.app/journal/${userid}`)
+    axios
+      .get(`https://abhorrent-soda-production.up.railway.app/journal/${userid}`)
       .then((response) => {
         setJournals(response.data);
       })
@@ -21,32 +33,6 @@ const ProgressReport = ({ userid }) => {
         console.error('Error fetching journal data:', error);
       });
   }, [userid]);
-
-  const extractMonthNameFromDate = (dateString) => {
-    const dateParts = dateString.split('-');
-    const month = dateParts[1];
-    const monthNames = [
-      'January', 'February', 'March', 'April', 'May', 'June', 'July',
-      'August', 'September', 'October', 'November', 'December'
-    ];
-    return monthNames[parseInt(month, 10) - 1];
-  };
-
-  useEffect(() => {
-    const counts = {};
-
-    journals.forEach((journal) => {
-      const month = extractMonthNameFromDate(journal.date);
-
-      if (counts[month]) {
-        counts[month] += 1;
-      } else {
-        counts[month] = 1;
-      }
-    });
-
-    setMonthlyCounts(counts);
-  }, [journals]);
 
   const extractMoodData = () => {
     const moodCounts = {};
@@ -64,190 +50,131 @@ const ProgressReport = ({ userid }) => {
     return moodCounts;
   };
 
-  useEffect(() => {
-    if (barChartRef.current) {
-      barChartRef.current.destroy();
-    }
+  const colorPalette = ['#ECF4D6', '#9AD0C2', '#2D9596', '#265073', '#092635'];
 
-    const ctx = document.getElementById('myChart')?.getContext('2d');
-    const months = Object.keys(monthlyCounts);
-    const counts = months.map((month) => monthlyCounts[month]);
+  const moodData = Object.entries(extractMoodData()).map(([label, count], index) => ({
+    key: label,
+    value: count,
+    svg: { fill: colorPalette[index % colorPalette.length] },
+    arc: { outerRadius: '100%', padAngle: 0.1 },
+  }));
 
-    try {
-      if (ctx) {
-        barChartRef.current = new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: months,
-            datasets: [
-              {
-                label: 'No. of Journals',
-                data: counts,
-                backgroundColor: ['#FF8080', '#FFCF96', '#F6FDC3', '#CDFAD5', '#A6CF98'],
-              },
-            ],
-          },
-          options: {
-            indexAxis: 'y',
-            scales: {
-              x: {
-                beginAtZero: true,
-              },
-            },
-            plugins: {
-              legend: {
-                display: false,
-              },
-            },
-            layout: {
-              padding: {
-                left: 10,
-                right: 10,
-                top: 10,
-                bottom: 10,
-              },
-            },
-          },
-        });
-      }
-    } catch (error) {
-      console.error('Error creating bar chart:', error);
-    }
-  }, [monthlyCounts]);
+  const dailyJournalCounts = journals.reduce((acc, journal) => {
+    const date = journal.date;
+    acc[date] = acc[date] ? acc[date] + 1 : 1;
+    return acc;
+  }, {});
 
-  useEffect(() => {
-    if (doughnutChartRef.current) {
-      doughnutChartRef.current.destroy();
-    }
+  const journalCountData = Object.entries(dailyJournalCounts).map(([date, count]) => {
+    const formattedDate = new Date(date).toLocaleString('default', { month: 'short', day: 'numeric' });
+    return {
+      date: formattedDate,
+      count,
+    };
+  });
 
-    const moodData = extractMoodData();
-    const moodLabels = Object.keys(moodData);
-    const moodCount = Object.values(moodData);
-    const doughnutChartCanvas = document.getElementById('moodChart');
+  const filteredJournalCountData = selectedMonth
+    ? journalCountData.filter((data) => new Date(data.date).getMonth() === selectedMonth)
+    : journalCountData;
 
-    if (doughnutChartCanvas) {
-      const ctx = doughnutChartCanvas.getContext('2d');
-
-      try {
-        doughnutChartRef.current = new Chart(ctx, {
-          type: 'doughnut',
-          data: {
-            labels: moodLabels,
-            datasets: [
-              {
-                data: moodCount,
-                backgroundColor: ['#FF8080', '#FFCF96', '#F6FDC3', '#CDFAD5', '#A6CF98'],
-              },
-            ],
-          },
-        });
-      } catch (error) {
-        console.error('Error creating doughnut chart:', error);
-      }
-    } else {
-      console.error('Canvas for moodChart not found.');
-    }
-  }, [journals]);
-
-  useEffect(() => {
-    if (secondBarChartRef.current) {
-      secondBarChartRef.current.destroy();
-    }
-
-    const typeCounts = {};
+  const barChartConfig = {
+    backgroundGradientFrom: '#30d5c8',
+    backgroundGradientTo: '#30d5c8',
+    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    style: {
+      borderRadius: 16,
+    },
+    propsForLabels: {
+      fontSize: 12,
+    },
+    barPercentage: 1.5,
+    barRadius: 0,
+  };
+  const extractJournalTypeData = () => {
+    const journalTypeCounts = {
+      Public: 0,
+      Private: 0,
+    };
 
     journals.forEach((journal) => {
-      const type = journal.type;
+      const journalType = journal.type;
 
-      if (typeCounts[type]) {
-        typeCounts[type] += 1;
+      if (journalTypeCounts[journalType]) {
+        journalTypeCounts[journalType] += 1;
       } else {
-        typeCounts[type] = 1;
+        // If the type is not found, assume it's Private
+        journalTypeCounts[journalType] = 1;
       }
     });
 
-    const typeLabels = Object.keys(typeCounts);
-    const typeData = Object.values(typeCounts);
-
-    const typeChartCanvas = document.getElementById('secondBarChart');
-
-    if (typeChartCanvas) {
-      const ctx = typeChartCanvas.getContext('2d');
-
-      try {
-        secondBarChartRef.current = new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: typeLabels,
-            datasets: [
-              {
-                label: 'No. of Journals by Type',
-                data: typeData,
-                backgroundColor: ['#FF8080', '#FFCF96', '#F6FDC3', '#CDFAD5', '#A6CF98'],
-              },
-            ],
-          },
-          options: {
-            indexAxis: 'x',
-            scales: {
-              x: {
-                beginAtZero: true,
-              },
-            },
-            plugins: {
-              legend: {
-                display: false,
-              },
-            },
-            layout: {
-              padding: {
-                left: 10,
-                right: 10,
-                top: 10,
-                bottom: 10,
-              },
-            },
-          },
-        });
-      } catch (error) {
-        console.error('Error creating the second bar chart:', error);
-      }
-    } else {
-      console.error('Canvas for the second bar chart not found.');
-    }
-  }, [journals]);
+    return journalTypeCounts;
+  };
+  const journalTypeData = Object.entries(extractJournalTypeData()).map(([type, count], index) => ({
+    key: type,
+    value: count,
+    svg: { fill: colorPalette[index % colorPalette.length] },
+  }));
+  const horizontalBarChartConfigTypes = {
+    backgroundGradientFrom: '#30d5c8',
+    backgroundGradientTo: '#30d5c8',
+    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    style: {
+      borderRadius: 16,
+    },
+    propsForLabels: {
+      fontSize: 12,
+    },
+  };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.chartTitle}>Monthly Journal Counts</Text>
-      <View>
-        <canvas id="myChart" width="400" height="200"></canvas>
+    <ScrollView>
+     
+      <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold', marginVertical: 10, color: '#30d5c8' }}>
+        Mood Distribution
+      </Text>
+      <PieChart style={{ height: 200 }} data={moodData} contentInset={{ top: 10, bottom: 10 }} />
+      <Legend data={moodData} colorPalette={colorPalette} />
+
+      <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold', marginVertical: 10, color: '#30d5c8' }}>
+        Journal Count
+      </Text>
+
+     
+
+      <View style={{ alignItems: 'center', borderRadius: 30, overflow: 'hidden' }}>
+        <View style={{ backgroundColor: '#30d5c8', borderRadius: 30, overflow: 'hidden' }}>
+          <BarChart
+            data={{
+              labels: filteredJournalCountData.map((data) => data.date),
+              datasets: [{ data: filteredJournalCountData.map((data) => data.count) }],
+            }}
+            width={windowDimensions.width - 20}
+            height={220}
+            chartConfig={barChartConfig}
+          />
+        </View>
       </View>
-      <Text style={styles.chartTitle}>Mood Distribution</Text>
-      <View>
-        <canvas id="moodChart" width="300" height="100"></canvas>
-      </View>
-      <Text style={styles.chartTitle}>Journal by Type</Text>
-      <View>
-        <canvas id="secondBarChart" width="400" height="200"></canvas>
+      <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold', marginVertical: 10, color: '#30d5c8' }}>
+        Journal Types
+      </Text>
+      <View style={{ alignItems: 'center', borderRadius: 30, overflow: 'hidden' }}>
+        <View style={{ backgroundColor: '#30d5c8', borderRadius: 30, overflow: 'hidden' }}>
+          <BarChart
+            data={{
+              labels: Object.keys(extractJournalTypeData()),
+              datasets: [{ data: Object.values(extractJournalTypeData()) }],
+            }}
+            width={windowDimensions.width - 20}
+            height={220}
+            chartConfig={horizontalBarChartConfigTypes}
+            horizontal
+          />
+        </View>
       </View>
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 20,
-  },
-  chartTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
-    color: '#30d5c8',
-  },
-});
 
 export default ProgressReport;

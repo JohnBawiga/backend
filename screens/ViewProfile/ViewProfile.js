@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { TextInput } from 'react-native-web';
+import { View, StyleSheet, Text, TouchableOpacity, Image} from 'react-native';
+import { TextInput } from 'react-native';
 import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation} from '@react-navigation/native';
+import {  useFocusEffect } from '@react-navigation/native';
+
 export default function ViewProfile({ userid }) {
     const navigation = useNavigation();
 
@@ -21,12 +23,18 @@ export default function ViewProfile({ userid }) {
     fetchUserEntry();
   }, []);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchUserEntry();
+    }, [userid])
+  );
+
   const navigateToEditProfile = () => {
     navigation.navigate('EditProfile');
   };
   const fetchUserEntry = () => {
     axios
-      .get(`https://wanted-sweater-production.up.railway.app/userGet/${userid}`)
+      .get(`https://abhorrent-soda-production.up.railway.app/userGet/${userid}`)
       .then((response) => {
         const userData = response.data;
         setUser(userData);
@@ -39,10 +47,7 @@ export default function ViewProfile({ userid }) {
   return (
     <View style={styles.container}>
       <View>
-        <img
-        style={styles.tinyLogo}
-        src={require('./usericon.png')}
-        ></img>
+        <Image source={require('./usericon.png')} style={styles.tinyLogo} />
       </View>
       <Text style={styles.label1}>Name</Text>
       <TextInput

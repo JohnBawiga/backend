@@ -1,0 +1,16 @@
+   @GetMapping("/getByUser")
+    public List<JournalEntity> getJournalsByUser(@RequestParam("userId") int userId) {
+        List<JournalEntity> allJournals = journalRepository.findAll();
+        List<JournalEntity> userJournals = new ArrayList<>();
+        
+        for (JournalEntity journal : allJournals) {
+            if (journal.getUserid() == userId) { 
+                userJournals.add(journal);
+            }
+        }
+        
+        return userJournals;
+    }
+   
+    
+}

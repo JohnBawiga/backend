@@ -18,7 +18,7 @@ export default function EditJournalV2({ navigation, route }) {
 
   const fetchJournalEntry = () => {
     axios
-      .get(`https://wanted-sweater-production.up.railway.app/journalGet/${journalID}`)
+      .get(`https://abhorrent-soda-production.up.railway.app/journalGet/${journalID}`)
       .then(response => {
         const { title, type, date, mood, message } = response.data;
         setTitle(title);
@@ -38,7 +38,7 @@ export default function EditJournalV2({ navigation, route }) {
 
   const confirmSaveChanges = () => {
     axios
-      .put(`https://wanted-sweater-production.up.railway.app/journal/${journalID}`, {
+      .put(`https://abhorrent-soda-production.up.railway.app/journal/${journalID}`, {
         title,
         type,
         date,
@@ -65,7 +65,7 @@ export default function EditJournalV2({ navigation, route }) {
 
   const confirmDelete = () => {
     axios
-      .delete(`https://wanted-sweater-production.up.railway.app/journal/${journalID}`)
+      .delete(`https://abhorrent-soda-production.up.railway.app/journal/${journalID}`)
       .then(() => {
         console.log('Journal entry deleted successfully');
         setShowConfirmation(false);
@@ -103,6 +103,8 @@ export default function EditJournalV2({ navigation, route }) {
       />
       <TextInput
         style={styles.input2}
+        textAlignVertical="top"
+
         placeholder="Message"
         value={message}
         onChangeText={setMessage}
@@ -195,7 +197,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   input2: {
-    height: 500,
+    height:'60%',
     borderWidth: 1,
     borderColor: 'gray',
     borderRadius: 5,

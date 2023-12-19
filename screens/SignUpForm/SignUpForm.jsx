@@ -17,6 +17,7 @@ const SignupForm = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  
   const [existingUser, setExistingUser] = useState({
     
 
@@ -38,7 +39,7 @@ const SignupForm = () => {
   // Function to send a POST request to the Spring Boot API
   const sendSignupRequest = async (userData) => {
     try {
-      const response = await axios.post('https://wanted-sweater-production.up.railway.app/signup', userData);
+      const response = await axios.post('https://abhorrent-soda-production.up.railway.app/signup', userData);
 
       // Handle the response here
       console.log('Response:', response.data);
@@ -56,7 +57,7 @@ const SignupForm = () => {
   const handleSignup = async () => {
     // Check if passwords match
     try {
-      const response = await axios.get(`https://wanted-sweater-production.up.railway.app/userByStudentID/${studentID}`, {
+      const response = await axios.get(`https://abhorrent-soda-production.up.railway.app/userByStudentID/${studentID}`, {
         validateStatus: function (status) {
           return status === 200 || status === 404; // Treat 404 as a valid status
         },
@@ -229,7 +230,8 @@ const styles = StyleSheet.create({
     resizeMode: 'contain', 
     marginBottom: 13,
     marginLeft: 17,
-    alignItems: 'center'
+    alignItems: 'center',
+   
   },
   container: {
     flex: 1,

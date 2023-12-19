@@ -24,7 +24,7 @@ export default function LoginFormat() {
   
     try {
       setInputError(''); // Clear input error message
-      const response = await axios.get('https://wanted-sweater-production.up.railway.app/getByUserid', {
+      const response = await axios.get('https://abhorrent-soda-production.up.railway.app/getByUserid', {
         params: {
           studentID: studentID,
           password: password,

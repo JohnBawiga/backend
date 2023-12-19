@@ -159,7 +159,7 @@ function App() {
         <Stack.Screen
           name="EditJournalV2"
           options={{
-            title: "Create a Journal",
+            title: "Edit Journal",
             headerTitleStyle: {
               color: 'white',
             fontWeight: 'bold',

@@ -35,14 +35,13 @@ const SetAppointment = ({ firstName, userid }) => {
     // Create an appointment object with the collected data
     const appointment = {
       userid,
-      firstName,
       date,
       time,
       message,
     };
     try {
       // Send a POST request to your server
-      const response = await axios.post('https://wanted-sweater-production.up.railway.app/setAppointment', appointment);
+    const response = await axios.post('https://abhorrent-soda-production.up.railway.app/requestAppointment?user=' + userid, appointment);
 
       if (response.status === 200) {
         // Appointment saved successfully
@@ -81,6 +80,8 @@ const SetAppointment = ({ firstName, userid }) => {
             style={[styles.input, styles.textarea]}
             value={message}
             onChangeText={(text) => setMessage(text)}
+            textAlignVertical="top"
+
             multiline={true}
             placeholder="Enter a message"
           />
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 8,
-    justifyContent: 'center',
+    
   },
   infoContainer: {  
     marginBottom: 20,
@@ -167,10 +168,12 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     padding: 8,
     marginBottom: 12,
+    
   },
   textarea: {
-    borderRadius:15,
-    height: 520,
+    borderRadius: 15,
+    height:'80%',
+    
   },
   button: {
     backgroundColor: '#30d5c8',

@@ -39,14 +39,14 @@ export default function CreateJournalV2({ userid }) {
     const requestBody = {
       userid:userid,
       type: type,
-      date: date,
+      date: date, 
       mood: mood,
       title: title,
       message: message,
     };
 
     axios
-      .post('https://wanted-sweater-production.up.railway.app/journal', requestBody)
+      .post('https://abhorrent-soda-production.up.railway.app/journal', requestBody)
       .then((response) => {
         console.log('Journal entry saved successfully!');
         setShowSuccessModal(true);
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   inputMessage: {
-    height: 400,
+    height: '55%',
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,

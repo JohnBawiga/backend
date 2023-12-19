@@ -1,7 +1,9 @@
 {
   "expo": {
     "name": "FirstProject",
-    "slug": "capstonewelltalk",
+    "slug": "FirstProject",
+    "description": "A mental health app",
+    "privacy": "public",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,16 +23,30 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.jack1tup.FirstProject"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "967ac376-9774-489e-beee-5235a89eb1b2"
+        "projectId": "f35eebce-26cc-4839-b3d5-216890bdc342"
       }
     },
-    "owner": "jack1tup2"
+    "plugins": [
+      [
+        "expo-updates",
+        {
+          "username": "jack1tup2"
+        }
+      ]
+    ],
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/f35eebce-26cc-4839-b3d5-216890bdc342"
+    }
   }
 }

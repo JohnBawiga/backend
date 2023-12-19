@@ -4,6 +4,8 @@ import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import {  useFocusEffect } from '@react-navigation/native';
+
 
 export default function JournalList({ userid }) {
   const navigation = useNavigation();
@@ -11,16 +13,22 @@ export default function JournalList({ userid }) {
   const [journalEntries, setJournalEntries] = useState([]);
   const [filteredEntries, setFilteredEntries] = useState([]);
   const [filterType, setFilterType] = useState('');
-  console.log(userid)
+
   useEffect(() => {
     fetchJournalEntries();
-  }, [userid]); // Fetch entries whenever the userid changes
+  }, [userid]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchJournalEntries();
+    }, [userid])
+  );
 
   
 
   const fetchJournalEntries = () => {
   axios
-    .get(`https://wanted-sweater-production.up.railway.app/journal/${userid}`)
+    .get(`https://abhorrent-soda-production.up.railway.app/journal/${userid}`)
     .then(response => {
       // Set both journalEntries and filteredEntries to the response data
       setJournalEntries(response.data);

@@ -6,7 +6,7 @@ const Reminder = () => {
   const [allPosts, setAllPosts] = useState([]);
 
   // Replace 'YOUR_API_ENDPOINT' with the actual endpoint of your backend API
-  const API_ENDPOINT = 'https://welltalk-backend.onrender.com/posts';
+  const API_ENDPOINT = 'https://welltalk.onrender.com/posts';
 
   useEffect(() => {
     const fetchData = async () => {
