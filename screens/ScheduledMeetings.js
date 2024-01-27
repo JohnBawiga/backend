@@ -18,7 +18,7 @@ const ScheduledMeetings = () => {
           const userDetails = JSON.parse(userDetailsString);
           const storedStudentID = userDetails.studentID;
   
-          const response = await axios.get(`https://welltalk.onrender.com/appointments/student/${storedStudentID}`);
+          const response = await axios.get(`https://welltalk.azurewebsites.net/appointments/student/${storedStudentID}`);
           const data = response.data;
   
           // Check if data is a string and parse it

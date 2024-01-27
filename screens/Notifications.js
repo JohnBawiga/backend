@@ -13,7 +13,7 @@ export default function Notifications({ userid }) {
 
   const fetchNotifications = () => {
     axios
-      .get(`https://abhorrent-soda-production.up.railway.app/getAppointmentsByUserAndDecision/${userid}`)
+      .get(`https://welltalk-mobile-production.up.railway.app/getAppointmentsByUserAndDecision/${userid}`)
       .then((response) => {
         const filteredNotifications = response.data.filter(notification => notification.decision === true);
         setNotifications(filteredNotifications);

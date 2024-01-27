@@ -46,7 +46,7 @@ export default function CreateJournalV2({ userid }) {
     };
 
     axios
-      .post('https://abhorrent-soda-production.up.railway.app/journal', requestBody)
+      .post('https://welltalk-mobile-production.up.railway.app/journal', requestBody)
       .then((response) => {
         console.log('Journal entry saved successfully!');
         setShowSuccessModal(true);

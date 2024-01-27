@@ -3,6 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Modal, Key
 import { format } from 'date-fns';
 import { MaterialIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 
 const SetAppointment = ({ firstName, userid }) => {
@@ -41,11 +42,11 @@ const SetAppointment = ({ firstName, userid }) => {
     };
     try {
       // Send a POST request to your server
-    const response = await axios.post('https://abhorrent-soda-production.up.railway.app/requestAppointment?user=' + userid, appointment);
+    const response = await axios.post('https://welltalk-mobile-production.up.railway.app/requestAppointment?user=' + userid, appointment);
 
       if (response.status === 200) {
         // Appointment saved successfully
-        alert('Appointment saved successfully!');
+        setMessage("");
       } else {
         alert('Failed to save appointment.');
       }

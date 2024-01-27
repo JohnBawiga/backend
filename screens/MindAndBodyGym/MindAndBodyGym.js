@@ -39,10 +39,10 @@ class MindAndBodyGym extends Component {
 
   getExercises = async (category, difficulty) => {
     try {
-      let apiUrl = `https://abhorrent-soda-production.up.railway.app/exercises/getByExerciseType?exercisetype=${category}`;
+      let apiUrl = `https://welltalk-mobile-production.up.railway.app/exercises/getByExerciseType?exercisetype=${category}`;
 
       if (difficulty !== 'All') {
-        apiUrl = `https://abhorrent-soda-production.up.railway.app/exercises/getByExerciseTypeAndDifficulty?exercisetype=${category}&difficulty=${difficulty}`;
+        apiUrl = `https://welltalk-mobile-production.up.railway.app/exercises/getByExerciseTypeAndDifficulty?exercisetype=${category}&difficulty=${difficulty}`;
       }
 
       const response = await fetch(apiUrl);

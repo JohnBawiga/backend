@@ -3,7 +3,6 @@ import { View, Text, ScrollView, useWindowDimensions } from 'react-native';
 import axios from 'axios';
 import { PieChart } from 'react-native-svg-charts';
 import { BarChart } from 'react-native-chart-kit';
-import { Picker } from '@react-native-picker/picker';
 
 const Legend = ({ data, colorPalette }) => {
   return (
@@ -25,7 +24,7 @@ const ProgressReport = ({ userid }) => {
 
   useEffect(() => {
     axios
-      .get(`https://abhorrent-soda-production.up.railway.app/journal/${userid}`)
+      .get(`https://welltalk-mobile-production.up.railway.app/journal/${userid}`)
       .then((response) => {
         setJournals(response.data);
       })

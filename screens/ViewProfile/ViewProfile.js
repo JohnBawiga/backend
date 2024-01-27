@@ -34,7 +34,7 @@ export default function ViewProfile({ userid }) {
   };
   const fetchUserEntry = () => {
     axios
-      .get(`https://abhorrent-soda-production.up.railway.app/userGet/${userid}`)
+      .get(`https://welltalk-mobile-production.up.railway.app/userGet/${userid}`)
       .then((response) => {
         const userData = response.data;
         setUser(userData);

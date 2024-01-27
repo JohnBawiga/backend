@@ -18,7 +18,7 @@ export default function EditJournalV2({ navigation, route }) {
 
   const fetchJournalEntry = () => {
     axios
-      .get(`https://abhorrent-soda-production.up.railway.app/journalGet/${journalID}`)
+      .get(`https://welltalk-mobile-production.up.railway.app/journalGet/${journalID}`)
       .then(response => {
         const { title, type, date, mood, message } = response.data;
         setTitle(title);
@@ -38,7 +38,7 @@ export default function EditJournalV2({ navigation, route }) {
 
   const confirmSaveChanges = () => {
     axios
-      .put(`https://abhorrent-soda-production.up.railway.app/journal/${journalID}`, {
+      .put(`https://welltalk-mobile-production.up.railway.app/journal/${journalID}`, {
         title,
         type,
         date,
@@ -65,7 +65,7 @@ export default function EditJournalV2({ navigation, route }) {
 
   const confirmDelete = () => {
     axios
-      .delete(`https://abhorrent-soda-production.up.railway.app/journal/${journalID}`)
+      .delete(`https://welltalk-mobile-production.up.railway.app/journal/${journalID}`)
       .then(() => {
         console.log('Journal entry deleted successfully');
         setShowConfirmation(false);

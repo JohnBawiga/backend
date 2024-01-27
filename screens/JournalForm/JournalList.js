@@ -28,7 +28,7 @@ export default function JournalList({ userid }) {
 
   const fetchJournalEntries = () => {
   axios
-    .get(`https://abhorrent-soda-production.up.railway.app/journal/${userid}`)
+    .get(`https://welltalk-mobile-production.up.railway.app/journal/${userid}`)
     .then(response => {
       // Set both journalEntries and filteredEntries to the response data
       setJournalEntries(response.data);

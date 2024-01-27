@@ -5,7 +5,6 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import {  useFocusEffect } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -23,7 +22,7 @@ const HomePage = ({ firstName }) => {
           const userDetails = JSON.parse(userDetailsString);
           const storedStudentID = userDetails.studentID;
   
-          const response = await axios.get(`https://welltalk.onrender.com/appointments/student/${storedStudentID}`);
+          const response = await axios.get(`https://welltalk.azurewebsites.net/appointments/student/${storedStudentID}`);
           const data = response.data;
   
           // Assuming meetings are sorted in descending order by start_date
@@ -50,7 +49,7 @@ setLatestMeeting(latestMeetingData);
 
   useEffect(() => {
     // Fetch the latest post from your backend API
-    fetch('https://welltalk.onrender.com/posts')
+    fetch('https://welltalk.azurewebsites.net/posts')
       .then((response) => response.json())
       .then((data) => {
         // Assuming posts are sorted in descending order by id
